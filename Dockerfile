@@ -1,5 +1,5 @@
 # Build stage for frontend
-FROM node:18-alpine AS frontend-build
+FROM node:22-slim AS frontend-build
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY vite.config.js index.html sales-pipeline.html ./
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
