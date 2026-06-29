@@ -12,7 +12,7 @@ RUN npm install
 # Copy source files
 COPY src ./src
 COPY public ./public
-COPY vite.config.js index.html ./
+COPY vite.config.js index.html sales-pipeline.html ./
 
 # Build frontend
 RUN npm run build
