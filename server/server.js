@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initDatabase } from './db.js';
 import routes from './routes.js';
 import authRoutes from './routes/auth.js';
@@ -12,6 +14,8 @@ import forgeRoutes from './routes/forge.js';
 import { initScheduler, scheduleRefresh } from './scheduler.js';
 
 dotenv.config();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,6 +39,18 @@ app.use('/api/forge', forgeRoutes);
 
 // Routes
 app.use(routes);
+
+// Serve the built frontend (Vite output) in production
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// SPA fallback: send index.html for any non-API GET request
+app.use((req, res, next) => {
+  if (req.method !== 'GET' || req.path.startsWith('/api') || req.path === '/health') {
+    return next();
+  }
+  res.sendFile(path.join(distPath, 'index.html'));
+});
 
 // Error handling
 app.use((err, req, res, next) => {
