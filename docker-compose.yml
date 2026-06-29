@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ai-learning-db
+    environment:
+      POSTGRES_USER: ai_admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: ai_dashboard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-learning-app
+    environment:
+      DATABASE_URL: postgresql://ai_admin:password123@db:5432/ai_dashboard
+      PORT: 5001
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_minimum_32_characters_long_here}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-MySecureAdminToken_12345_ChangeThis}
+    ports:
+      - "5001:5001"
+      - "5173:5173"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./dist:/app/dist:ro
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: ai-learning-network

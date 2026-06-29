@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "vite": {
+      "command": "npm run dev",
+      "cwd": "/Users/jackward/Downloads/ai-learning-hub",
+      "waitFor": "Local:.*http://localhost"
+    },
+    "backend": {
+      "command": "npm run server",
+      "cwd": "/Users/jackward/Downloads/ai-learning-hub",
+      "waitFor": "listening on"
+    }
+  }
+}
