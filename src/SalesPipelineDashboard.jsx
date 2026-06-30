@@ -30,7 +30,7 @@ const SalesPipelineDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/sales-pipeline');
+      const response = await fetch(((typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:5001' : '') + '/api/sales-pipeline');
       if (!response.ok) throw new Error('Failed to fetch pipeline data');
 
       const data = await response.json();

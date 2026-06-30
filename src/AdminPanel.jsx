@@ -22,7 +22,7 @@ const AdminPanel = () => {
     scheduleCron: '',
   });
 
-  const apiBase = 'http://localhost:5000';
+  const apiBase = (typeof window !== 'undefined' && window.location.hostname === 'localhost') ? 'http://localhost:5001' : '';
 
   // Login handler
   const handleLogin = (e) => {
